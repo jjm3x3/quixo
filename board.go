@@ -107,16 +107,20 @@ func (self *board) printBoard() {
 
 func (self *board) makeMove(pos int) error {
 	theMove := self.whoseTurn()
+	// fmt.Printf("wats the move %c\n", self.whoseTurn())
 
 	if pos >= 0 && pos < 5 {
+		row := 0
 
-		for row := 0; row < 5; row++ {
+		oldPeice := self.grid[row][pos]
+		// fmt.Printf("old peice is from %v, %v\n", row, pos)
+		if oldPeice != theMove && oldPeice != '#' {
+			fmt.Printf("what is this thing: %c\n", oldPeice)
+			return errors.New("that is an illegal Move")
+		}
+		for ; row < 5; row++ {
 			restOfRow := self.grid[row][pos+1 : len(self.grid[0])]
-			oldPeice := self.grid[row][pos]
-			if oldPeice != theMove && oldPeice != '#' {
-				fmt.Printf("what is this thing: %c\n", oldPeice)
-				return errors.New("that is an illegal Move")
-			}
+			oldPeice = self.grid[row][pos]
 			startOfRow := self.grid[row][0:pos]
 			var newRow []rune
 			newRow = append(newRow, startOfRow...)

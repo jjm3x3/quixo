@@ -11,21 +11,79 @@ func TestMoves(t *testing.T) {
 	theBoard.printBoard()
 
 	theBoard.makeMove(0)
+	if theBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("this should be a plenty fine opening move")
+	}
+	err := theBoard.makeMove(0)
+	if err != nil {
+		t.Logf("this is a bad move?!")
+	}
+	if theBoard.getPosition(4, 0) != 'O' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(0)
+	if theBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(0)
-	theBoard.makeMove(0)
+	if theBoard.getPosition(4, 0) != 'O' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 
 	theBoard.makeMove(0)
+	if theBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(1)
+	if theBoard.getPosition(4, 1) != 'O' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(1)
+	if theBoard.getPosition(4, 1) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(1)
+	if theBoard.getPosition(4, 1) != 'O' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(1)
+	if theBoard.getPosition(4, 1) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(1)
+	if theBoard.getPosition(4, 1) != 'O' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 	theBoard.makeMove(5)
-	theBoard.makeMove(10)
-	theBoard.makeMove(10)
-	theBoard.makeMove(11)
-	theBoard.makeMove(15)
+	if theBoard.getPosition(0, 0) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
+	err = theBoard.makeMove(10)
+	if err == nil {
+		t.Errorf("this shouldent be allowed")
+	}
+
+	// make expicit turn change for testing
+	theBoard.turn = !theBoard.turn
+
+	err = theBoard.makeMove(10)
+	if err != nil {
+		t.Errorf("This should be just fine")
+	}
+	if theBoard.getPosition(0, 4) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
+	theBoard.makeMove(12)
+	if theBoard.getPosition(2, 4) != 'O' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
+	err = theBoard.makeMove(15)
+	if err != nil {
+		t.Errorf("This should be just fine")
+	}
+	if theBoard.getPosition(0, 0) != 'X' {
+		t.Errorf("this should be a plenty fine counter move")
+	}
 }
 
 func TestSimpleWin(t *testing.T) {
