@@ -167,6 +167,9 @@ func (self *board) checkForWin() bool {
 				leads[5] = self.grid[i][j]
 				leads[10] = self.grid[i][j]
 			} else if i == 0 {
+				if j == 4 {
+					leads[11] = self.grid[i][j]
+				}
 				leads[j+5] = self.grid[i][j]
 				if leads[0] != self.grid[i][j] {
 					leads[0] = '#'
@@ -190,8 +193,13 @@ func (self *board) checkForWin() bool {
 
 				}
 			}
-			leads[11] = '#'
-			fmt.Printf("what is the val of %c\n", leads)
+			if i+j == 4 {
+				if leads[11] != self.grid[i][j] {
+					leads[11] = '#'
+				}
+
+			}
+			// fmt.Printf("what is the val of %c\n", leads)
 		}
 	}
 
@@ -199,7 +207,7 @@ func (self *board) checkForWin() bool {
 
 	for i := range leads {
 		isWinner := leads[i] != '#'
-		fmt.Printf("is it true now?: %v\n", isWinner)
+		// fmt.Printf("is it true now?: %v\n", isWinner)
 		result = result || isWinner
 	}
 
