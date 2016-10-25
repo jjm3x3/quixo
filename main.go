@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	_ "bytes"
 	"errors"
 	"fmt"
 	_ "strconv"
@@ -35,23 +35,44 @@ func main() {
 	// theBoard.makeMove(15)
 
 	// some one should win
+	aWin := theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 0) //x go
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 1) //o go
 	// 2
 	// theBoard.printBoard()
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 0) //x go
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 1)
 	//4
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 0)
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 1)
 	// 6
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 0)
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 1)
 	// 8
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 0)
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 	tryMove(theBoard, 1)
 	// 10
-	theBoard.checkForWin()
+	aWin = theBoard.checkForWin()
+	fmt.Printf("did someone win?!: %v\n", aWin)
 
 	// some one should win
 	// tryMove(theBoard, 10) //x go
@@ -107,7 +128,7 @@ func newBoard() *board {
 
 func (self *board) checkForWin() bool {
 	leads := make([]rune, 12)
-	wins := make([]bool, 12)
+	// wins := make([]bool, 12)
 
 	// for i := 0; i < len(self.board); i++ {
 	// 	if i == 0 {
@@ -139,41 +160,50 @@ func (self *board) checkForWin() bool {
 	// 	}
 	// }
 
-	for i := 0; i < len(self.board); i++ {
-		for j := 0; i < len(self.board); j++ {
-			if i == 0 && (leads[0] == '#' || leads[0] != self.board[j][0]) {
-				leads[0] = '#'
+	for i := 0; i < len(self.grid); i++ {
+		for j := 0; j < len(self.grid); j++ {
+			if i == 0 && j == 0 {
+				leads[0] = self.grid[i][j]
+				leads[5] = self.grid[i][j]
+				leads[10] = self.grid[i][j]
+			} else if i == 0 {
+				leads[j+5] = self.grid[i][j]
+				if leads[0] != self.grid[i][j] {
+					leads[0] = '#'
+				}
+			} else if j == 0 {
+				leads[i] = self.grid[i][j]
+				if leads[j+5] != self.grid[i][j] {
+					leads[j+5] = '#'
+				}
+			} else {
+				if leads[i] != self.grid[i][j] {
+					leads[i] = '#'
+				}
+				if leads[j+5] != self.grid[i][j] {
+					leads[j+5] = '#'
+				}
+				if i == j {
+					if leads[10] != self.grid[i][j] {
+						leads[10] = '#'
+					}
+
+				}
 			}
-			if i == 1 && (leads[1] == '#' || leads[1] != self.board[j][1]) {
-				leads[1] = '#'
-			}
-			if i == 2 && (leads[2] == '#' || leads[2] != self.board[j][2]) {
-				leads[2] = '#'
-			}
-			if i == 3 && (leads[3] == '#' || leads[3] != self.board[j][3]) {
-				leads[3] = '#'
-			}
-			if i == 4 && (leads[4] == '#' || leads[4] != self.board[j][4]) {
-				leads[4] = '#'
-			}
-			if j == 0 && (leads[j+5] == "#" || leads[j+5] != self.board[0][j]) {
-				leads[j+5] = '#'
-			}
-			if j == 0 && (leads[j+5] == "#" || leads[j+5] != self.board[0][j]) {
-				leads[j+5] = '#'
-			}
-			if j == 0 && (leads[j+5] == "#" || leads[j+5] != self.board[0][j]) {
-				leads[j+5] = '#'
-			}
-			if j == 0 && (leads[j+5] == "#" || leads[j+5] != self.board[0][j]) {
-				leads[j+5] = '#'
-			}
-			if j == 0 && (leads[j+5] == "#" || leads[j+5] != self.board[0][j]) {
-				leads[j+5] = '#'
-			}
+			leads[11] = '#'
+			fmt.Printf("what is the val of %c\n", leads)
 		}
 	}
-	return false
+
+	result := false
+
+	for i := range leads {
+		isWinner := leads[i] != '#'
+		fmt.Printf("is it true now?: %v\n", isWinner)
+		result = result || isWinner
+	}
+
+	return result
 }
 
 func (self *board) getPosition(i, j int) rune {
