@@ -4,6 +4,7 @@ import (
 	_ "bytes"
 	"errors"
 	"fmt"
+	"os"
 	_ "strconv"
 )
 
@@ -34,45 +35,46 @@ func main() {
 	// theBoard.makeMove(11)
 	// theBoard.makeMove(15)
 
-	// some one should win
-	aWin := theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 0) //x go
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 1) //o go
-	// 2
-	// theBoard.printBoard()
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 0) //x go
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 1)
-	//4
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 0)
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 1)
-	// 6
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 0)
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 1)
-	// 8
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 0)
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
-	tryMove(theBoard, 1)
-	// 10
-	aWin = theBoard.checkForWin()
-	fmt.Printf("did someone win?!: %v\n", aWin)
+	// // some one should win
+	// tryMove(theBoard, 0) //x go
+	// tryMove(theBoard, 1) //o go
+	// // 2
+	// // theBoard.printBoard()
+	// tryMove(theBoard, 0) //x go
+	// tryMove(theBoard, 1)
+	// //4
+	// tryMove(theBoard, 0)
+	// tryMove(theBoard, 1)
+	// // 6
+	// tryMove(theBoard, 0)
+	// tryMove(theBoard, 1)
+	// // 8
+	// tryMove(theBoard, 0)
+	// tryMove(theBoard, 1)
+	// // 10
+
+	// the diagonal 12 win
+	tryMove(theBoard, 9)
+	tryMove(theBoard, 7)
+
+	tryMove(theBoard, 8)
+	tryMove(theBoard, 8)
+
+	tryMove(theBoard, 7)
+	tryMove(theBoard, 7)
+
+	tryMove(theBoard, 6)
+	tryMove(theBoard, 7)
+
+	tryMove(theBoard, 5)
+	tryMove(theBoard, 5)
+	tryMove(theBoard, 5)
+	tryMove(theBoard, 5)
+	tryMove(theBoard, 5)
+
+	tryMove(theBoard, 6)
+	tryMove(theBoard, 6)
+	tryMove(theBoard, 6)
 
 	// some one should win
 	// tryMove(theBoard, 10) //x go
@@ -110,9 +112,25 @@ func main() {
 
 func tryMove(theBoard *board, x int) {
 	// fmt.Printf("whose turn? %v\n", theBoard.turn)
+	fmt.Printf("%c moves %v\n", theBoard.whoseTurn(), x)
 	err := theBoard.makeMove(x)
 	if err != nil {
+		theBoard.printBoard()
+		fmt.Printf("%c can't move %v\n", theBoard.whoseTurn(), x)
 		panic("ilegal mOVE!")
+	}
+	if theBoard.checkForWin() {
+		fmt.Printf("someone Won\n")
+		theBoard.printBoard()
+		os.Exit(0)
+	}
+}
+
+func (self *board) whoseTurn() rune {
+	if self.turn {
+		return 'X'
+	} else {
+		return 'O'
 	}
 }
 
@@ -128,37 +146,6 @@ func newBoard() *board {
 
 func (self *board) checkForWin() bool {
 	leads := make([]rune, 12)
-	// wins := make([]bool, 12)
-
-	// for i := 0; i < len(self.board); i++ {
-	// 	if i == 0 {
-	// 		if slef.board[0][i] != '#' {
-	// 			leads[11] = self.board[0][i]
-	// 		} else {
-	// 			wins[11] = true
-	// 		}
-	// 	}
-	// 	if slef.board[0][i] != '#' {
-	// 		leads[i] = self.board[0][i]
-	// 	} else {
-	// 		wins[i] = true
-	// 	}
-	// }
-
-	// for i := 0; i < len(self.board); i++ {
-	// 	if slef.board[i][0] != '#' {
-	// 		leads[i+5] = self.board[0][i]
-	// 	} else {
-	// 		wins[i+5] = true
-	// 	}
-	// 	if i == 5 {
-	// 		if slef.board[0][i] != '#' {
-	// 			leads[12] = self.board[0][i]
-	// 		} else {
-	// 			wins[12] = true
-	// 		}
-	// 	}
-	// }
 
 	for i := 0; i < len(self.grid); i++ {
 		for j := 0; j < len(self.grid); j++ {
@@ -267,14 +254,17 @@ func (self *board) makeMove(pos int) error {
 	}
 	if pos >= 5 && pos < 10 {
 		pos = pos - 5
+		row := 4
 
-		for row := 4; row >= 0; row-- {
+		oldPeice := self.grid[row][pos]
+		fmt.Printf("old peice is from %v, %v\n", row, pos)
+		if oldPeice != theMove && oldPeice != '#' {
+			fmt.Printf("what is this thing: %c\n", oldPeice)
+			return errors.New("that is an illegal Move")
+		}
+		for ; row >= 0; row-- {
 			restOfRow := self.grid[row][pos+1 : len(self.grid[0])]
-			oldPeice := self.grid[row][pos]
-			if oldPeice != theMove && oldPeice != '#' {
-				fmt.Printf("what is this thing: %c\n", oldPeice)
-				return errors.New("that is an illegal Move")
-			}
+			oldPeice = self.grid[row][pos]
 			startOfRow := self.grid[row][0:pos]
 			var newRow []rune
 			newRow = append(newRow, startOfRow...)
