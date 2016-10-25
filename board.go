@@ -106,12 +106,7 @@ func (self *board) printBoard() {
 }
 
 func (self *board) makeMove(pos int) error {
-	var theMove rune
-	if self.turn {
-		theMove = 'X'
-	} else {
-		theMove = 'O'
-	}
+	theMove := self.whoseTurn()
 
 	if pos >= 0 && pos < 5 {
 
@@ -141,7 +136,7 @@ func (self *board) makeMove(pos int) error {
 		row := 4
 
 		oldPeice := self.grid[row][pos]
-		fmt.Printf("old peice is from %v, %v\n", row, pos)
+		// fmt.Printf("old peice is from %v, %v\n", row, pos)
 		if oldPeice != theMove && oldPeice != '#' {
 			fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
@@ -183,7 +178,7 @@ func (self *board) makeMove(pos int) error {
 		pos = pos - 15
 
 		var newRow []rune
-		oldPeice := self.grid[pos][len(self.grid)]
+		oldPeice := self.grid[pos][len(self.grid)-1]
 		if oldPeice != theMove && oldPeice != '#' {
 			fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
