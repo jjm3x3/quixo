@@ -107,6 +107,7 @@ func (self *board) printBoard() {
 
 func (self *board) makeMove(pos int) error {
 	theMove := self.whoseTurn()
+	// fmt.Printf("move to?: %v\n", pos)
 	// fmt.Printf("wats the move %c\n", self.whoseTurn())
 
 	if pos >= 0 && pos < 5 {

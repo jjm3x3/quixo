@@ -1,19 +1,31 @@
 package main
 
 import (
+	"bufio"
 	_ "bytes"
 	"fmt"
 	"os"
-	_ "strconv"
+	"strconv"
 )
 
 func main() {
 
 	theBoard := newBoard()
 
-	theBoard.printBoard()
+	for {
+		theBoard.printBoard()
 
-	theBoard.printBoard()
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Printf("select a move\n")
+		text, _ := reader.ReadString('\n')
+		move, err := strconv.Atoi(text[0 : len(text)-1])
+		if err != nil {
+			fmt.Printf("There was an error parsing the move: %v\n", err)
+		}
+		// fmt.Printf("what is the number %d\n", move)
+		tryMove(theBoard, move)
+
+	}
 
 }
 
