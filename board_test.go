@@ -1,12 +1,13 @@
 package main
 
 import (
+	_ "fmt"
 	"testing"
 )
 
 func TestMoves(t *testing.T) {
 
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 
 	theBoard.printBoard()
 
@@ -87,7 +88,7 @@ func TestMoves(t *testing.T) {
 }
 
 func TestSimpleWin(t *testing.T) {
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 
 	// theBoard.printBoard()
 
@@ -109,14 +110,14 @@ func TestSimpleWin(t *testing.T) {
 	theBoard.makeMove(1)
 	// 10
 
-	if !theBoard.checkForWin() {
+	if theBoard.checkForWin() == '#' {
 		t.Errorf("this should be a win")
 	}
 }
 
 func TestSimpleWin2(t *testing.T) {
 
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 
 	// theBoard.printBoard()
 
@@ -137,14 +138,14 @@ func TestSimpleWin2(t *testing.T) {
 	theBoard.makeMove(10) //x go
 	theBoard.makeMove(11) //o go
 
-	if !theBoard.checkForWin() {
+	if theBoard.checkForWin() == '#' {
 		t.Errorf("this should be a win")
 	}
 }
 
 func Test12DiagWin(t *testing.T) {
 
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 
 	// theBoard.printBoard()
 
@@ -171,7 +172,7 @@ func Test12DiagWin(t *testing.T) {
 	theBoard.makeMove(6)
 	theBoard.makeMove(6)
 
-	if !theBoard.checkForWin() {
+	if theBoard.checkForWin() != 'X' {
 		t.Errorf("this should be a win")
 	}
 }
@@ -179,7 +180,7 @@ func Test12DiagWin(t *testing.T) {
 //should be illegal
 func TestIlegalMove1(t *testing.T) {
 	t.Log("this is testIlegalMove1")
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 	theBoard.makeMove(0)        //x go
 	err := theBoard.makeMove(5) //o go
 	if err == nil {
@@ -188,7 +189,7 @@ func TestIlegalMove1(t *testing.T) {
 }
 
 func TestIlegalMove1r(t *testing.T) {
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 	theBoard.makeMove(5)        //x go
 	err := theBoard.makeMove(0) //o go
 	if err == nil {
@@ -197,7 +198,7 @@ func TestIlegalMove1r(t *testing.T) {
 }
 
 func TestIlegalMove2(t *testing.T) {
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 	theBoard.makeMove(10)        //x go
 	err := theBoard.makeMove(15) //o go
 	if err == nil {
@@ -206,10 +207,38 @@ func TestIlegalMove2(t *testing.T) {
 }
 
 func TestIlegalMove2r(t *testing.T) {
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 	theBoard.makeMove(15)        //x go
 	err := theBoard.makeMove(10) //o go
 	if err == nil {
 		t.Errorf("the last move is ilegal")
+	}
+}
+
+func TestNewBoardWithALayout(t *testing.T) {
+	// aLayout := [][]rune{
+	// 	[]rune{'X', 'O', '#', '#', '#'},
+	// 	[]rune{'X', 'O', '#', '#', '#'},
+	// 	[]rune{'O', '#', '#', '#', '#'},
+	// 	[]rune{'x', 'O', '#', '#', '#'},
+	// 	[]rune{'X', 'O', '#', '#', '#'}}
+	// theBoard := newBoard(aLayout)
+	// add board equality
+	// if theBoard.grid != aLayout {
+	// 	t.Errorf("The board should be initalized with the layout")
+	// }
+}
+
+func TestForNoWinWhenBothWin(t *testing.T) {
+	aLayout := [][]rune{
+		[]rune{'X', 'O', '#', '#', '#'},
+		[]rune{'X', 'O', '#', '#', '#'},
+		[]rune{'O', '#', '#', '#', '#'},
+		[]rune{'X', 'O', '#', '#', '#'},
+		[]rune{'X', 'O', '#', '#', '#'}}
+	theBoard := newBoard(aLayout)
+	theBoard.makeMove(17)
+	if theBoard.checkForWin() != 'O' {
+		t.Errorf("O should win because even though X has five in a row so does O")
 	}
 }

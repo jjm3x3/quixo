@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	theBoard := newBoard()
+	theBoard := newBoard(nil)
 
 	for {
 		theBoard.printBoard()
@@ -38,7 +38,7 @@ func tryMove(theBoard *board, x int) {
 		fmt.Printf("%c can't move %v\n", theBoard.whoseTurn(), x)
 		panic("ilegal mOVE!")
 	}
-	if theBoard.checkForWin() {
+	if theBoard.checkForWin() == '#' {
 		fmt.Printf("someone Won\n")
 		theBoard.printBoard()
 		os.Exit(0)

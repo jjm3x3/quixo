@@ -18,17 +18,22 @@ func (self *board) whoseTurn() rune {
 	}
 }
 
-func newBoard() *board {
-	newBoard := board{grid: [][]rune{
-		[]rune{'#', '#', '#', '#', '#'},
-		[]rune{'#', '#', '#', '#', '#'},
-		[]rune{'#', '#', '#', '#', '#'},
-		[]rune{'#', '#', '#', '#', '#'},
-		[]rune{'#', '#', '#', '#', '#'}}, turn: true}
+func newBoard(layout [][]rune) *board {
+	var newBoard board
+	if layout != nil {
+		newBoard = board{grid: layout, turn: true}
+	} else {
+		newBoard = board{grid: [][]rune{
+			[]rune{'#', '#', '#', '#', '#'},
+			[]rune{'#', '#', '#', '#', '#'},
+			[]rune{'#', '#', '#', '#', '#'},
+			[]rune{'#', '#', '#', '#', '#'},
+			[]rune{'#', '#', '#', '#', '#'}}, turn: true}
+	}
 	return &newBoard
 }
 
-func (self *board) checkForWin() bool {
+func (self *board) checkForWin() rune {
 	leads := make([]rune, 12)
 
 	for i := 0; i < len(self.grid); i++ {
@@ -74,12 +79,18 @@ func (self *board) checkForWin() bool {
 		}
 	}
 
-	result := false
+	result := '#'
 
 	for i := range leads {
-		isWinner := leads[i] != '#'
-		// fmt.Printf("is it true now?: %v\n", isWinner)
-		result = result || isWinner
+		// fmt.Printf("What does this look like: %c\n", leads[i])
+		if leads[i] != '#' {
+			if self.whoseTurn() == leads[i] {
+				return leads[i]
+			} else {
+				result = leads[i]
+			}
+		}
+
 	}
 
 	return result
@@ -116,7 +127,7 @@ func (self *board) makeMove(pos int) error {
 		oldPeice := self.grid[row][pos]
 		// fmt.Printf("old peice is from %v, %v\n", row, pos)
 		if oldPeice != theMove && oldPeice != '#' {
-			fmt.Printf("what is this thing: %c\n", oldPeice)
+			// fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
 		}
 		for ; row < 5; row++ {
@@ -143,7 +154,7 @@ func (self *board) makeMove(pos int) error {
 		oldPeice := self.grid[row][pos]
 		// fmt.Printf("old peice is from %v, %v\n", row, pos)
 		if oldPeice != theMove && oldPeice != '#' {
-			fmt.Printf("what is this thing: %c\n", oldPeice)
+			// fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
 		}
 		for ; row >= 0; row-- {
@@ -170,7 +181,7 @@ func (self *board) makeMove(pos int) error {
 		var newRow []rune
 		oldPeice := self.grid[pos][0]
 		if oldPeice != theMove && oldPeice != '#' {
-			fmt.Printf("what is this thing: %c\n", oldPeice)
+			// fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
 		}
 		newRow = append(newRow, self.grid[pos][1:len(self.grid)]...)
@@ -185,7 +196,7 @@ func (self *board) makeMove(pos int) error {
 		var newRow []rune
 		oldPeice := self.grid[pos][len(self.grid)-1]
 		if oldPeice != theMove && oldPeice != '#' {
-			fmt.Printf("what is this thing: %c\n", oldPeice)
+			// fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
 		}
 		newRow = append(newRow, theMove) //self.grid[pos][0])
