@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	_ "fmt"
 	"testing"
 )
 
@@ -55,11 +55,15 @@ func TestMoves(t *testing.T) {
 	if theBoard.getPosition(4, 1) != 'O' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
-	fmt.Printf("what does this look like?:\n")
-	theBoard.printBoard()
-	theBoard.makeMove(5)
+	err = theBoard.makeMove(5)
 	if theBoard.getPosition(0, 0) != 'X' {
 		t.Errorf("this should be a plenty fine counter move")
+	}
+	if err != nil {
+		t.Errorf("This should be plenty valid")
+	}
+	if theBoard.getPosition(4, 0) != 'O' {
+		t.Errorf("some move messed up!")
 	}
 	err = theBoard.makeMove(10)
 	if err == nil {
@@ -76,19 +80,13 @@ func TestMoves(t *testing.T) {
 	if theBoard.getPosition(0, 4) != 'X' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
-	fmt.Printf("just before the move to 12 by %c\n", theBoard.whoseTurn())
-	theBoard.printBoard()
 	err = theBoard.makeMove(12)
-	fmt.Printf("just after the move to 12 by %c\n", theBoard.whoseTurn())
-	theBoard.printBoard()
 	if err != nil {
 		t.Errorf("This should be just fine")
 	}
 	if theBoard.getPosition(2, 4) != 'O' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
-	theBoard.printBoard()
-	fmt.Printf("%c trying to move 15\n", theBoard.whoseTurn())
 	err = theBoard.makeMove(15)
 	if err != nil {
 		t.Errorf("This should be just fine")
