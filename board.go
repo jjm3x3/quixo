@@ -209,3 +209,14 @@ func (self *board) makeMove(pos int) error {
 	self.turn = !self.turn
 	return nil
 }
+
+func (self *board) equals(other *board) bool {
+	for i := 0; i < len(self.grid); i++ {
+		for j := 0; j < len(self.grid[0]); j++ {
+			if self.getPosition(i, j) != other.getPosition(i, j) {
+				return false
+			}
+		}
+	}
+	return true
+}

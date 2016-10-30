@@ -216,17 +216,17 @@ func TestIlegalMove2r(t *testing.T) {
 }
 
 func TestNewBoardWithALayout(t *testing.T) {
-	// aLayout := [][]rune{
-	// 	[]rune{'X', 'O', '#', '#', '#'},
-	// 	[]rune{'X', 'O', '#', '#', '#'},
-	// 	[]rune{'O', '#', '#', '#', '#'},
-	// 	[]rune{'x', 'O', '#', '#', '#'},
-	// 	[]rune{'X', 'O', '#', '#', '#'}}
-	// theBoard := newBoard(aLayout)
+	aLayout := [][]rune{
+		[]rune{'X', 'O', '#', '#', '#'},
+		[]rune{'X', 'O', '#', '#', '#'},
+		[]rune{'O', '#', '#', '#', '#'},
+		[]rune{'x', 'O', '#', '#', '#'},
+		[]rune{'X', 'O', '#', '#', '#'}}
+	theBoard := newBoard(aLayout)
 	// add board equality
-	// if theBoard.grid != aLayout {
-	// 	t.Errorf("The board should be initalized with the layout")
-	// }
+	if !theBoard.equals(newBoard(aLayout)) {
+		t.Errorf("The board should be initalized with the layout")
+	}
 }
 
 func TestForNoWinWhenBothWin(t *testing.T) {
