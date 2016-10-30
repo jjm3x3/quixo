@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"testing"
 )
 
@@ -55,6 +55,8 @@ func TestMoves(t *testing.T) {
 	if theBoard.getPosition(4, 1) != 'O' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
+	fmt.Printf("what does this look like?:\n")
+	theBoard.printBoard()
 	theBoard.makeMove(5)
 	if theBoard.getPosition(0, 0) != 'X' {
 		t.Errorf("this should be a plenty fine counter move")
@@ -74,10 +76,19 @@ func TestMoves(t *testing.T) {
 	if theBoard.getPosition(0, 4) != 'X' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
-	theBoard.makeMove(12)
+	fmt.Printf("just before the move to 12 by %c\n", theBoard.whoseTurn())
+	theBoard.printBoard()
+	err = theBoard.makeMove(12)
+	fmt.Printf("just after the move to 12 by %c\n", theBoard.whoseTurn())
+	theBoard.printBoard()
+	if err != nil {
+		t.Errorf("This should be just fine")
+	}
 	if theBoard.getPosition(2, 4) != 'O' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
+	theBoard.printBoard()
+	fmt.Printf("%c trying to move 15\n", theBoard.whoseTurn())
 	err = theBoard.makeMove(15)
 	if err != nil {
 		t.Errorf("This should be just fine")
@@ -172,6 +183,7 @@ func Test12DiagWin(t *testing.T) {
 	theBoard.makeMove(6)
 	theBoard.makeMove(6)
 
+	// theBoard.printBoard()
 	if theBoard.checkForWin() != 'X' {
 		t.Errorf("this should be a win")
 	}

@@ -116,65 +116,59 @@ func (self *board) printBoard() {
 	fmt.Printf("         \n")
 }
 
+func isBottom(move int) bool {
+	return move >= 5 && move < 10
+}
+
 func (self *board) makeMove(pos int) error {
 	theMove := self.whoseTurn()
 	// fmt.Printf("move to?: %v\n", pos)
 	// fmt.Printf("wats the move %c\n", self.whoseTurn())
 
-	if pos >= 0 && pos < 5 {
-		row := 0
+	var row int
+	if pos >= 0 && pos < 5 || isBottom(pos) {
+		if pos >= 0 && pos < 5 {
+			row = 0
+
+		} else if isBottom(pos) {
+			pos = pos - 5
+			row = 4
+
+		}
+		fmt.Printf("where are we moving? (%v,%v)\n", row, pos)
 
 		oldPeice := self.grid[row][pos]
-		// fmt.Printf("old peice is from %v, %v\n", row, pos)
 		if oldPeice != theMove && oldPeice != '#' {
-			// fmt.Printf("what is this thing: %c\n", oldPeice)
 			return errors.New("that is an illegal Move")
 		}
 		for ; row < 5; row++ {
+			if isBottom(pos) {
+				row = 4 - row
+			}
 			restOfRow := self.grid[row][pos+1 : len(self.grid[0])]
 			oldPeice = self.grid[row][pos]
 			startOfRow := self.grid[row][0:pos]
 			var newRow []rune
 			newRow = append(newRow, startOfRow...)
-			if row == 4 {
+			if (pos >= 0 && pos < 5 && row == 4) || isBottom(pos) && row == 0 {
 				newRow = append(newRow, theMove)
 			} else {
-				newPeice := self.grid[row+1][pos]
+				var newPeice rune
+				if isBottom(pos) {
+					newPeice = self.grid[row-1][pos]
+				} else {
+					newPeice = self.grid[row+1][pos]
+				}
 				newRow = append(newRow, newPeice)
 			}
 			newRow = append(newRow, restOfRow...)
 			self.grid[row] = newRow
 		}
 
-	}
-	if pos >= 5 && pos < 10 {
-		pos = pos - 5
-		row := 4
-
-		oldPeice := self.grid[row][pos]
-		// fmt.Printf("old peice is from %v, %v\n", row, pos)
-		if oldPeice != theMove && oldPeice != '#' {
-			// fmt.Printf("what is this thing: %c\n", oldPeice)
-			return errors.New("that is an illegal Move")
-		}
-		for ; row >= 0; row-- {
-			restOfRow := self.grid[row][pos+1 : len(self.grid[0])]
-			oldPeice = self.grid[row][pos]
-			startOfRow := self.grid[row][0:pos]
-			var newRow []rune
-			newRow = append(newRow, startOfRow...)
-			if row == 0 {
-				newRow = append(newRow, theMove)
-			} else {
-				newPeice := self.grid[row-1][pos]
-				newRow = append(newRow, newPeice)
-			}
-			newRow = append(newRow, restOfRow...)
-			self.grid[row] = newRow
-		}
 	}
 
 	if pos >= 10 && pos < 15 {
+		fmt.Printf("do we get here?\n")
 		pos = pos - 10
 
 		// fmt.Printf("%v\n", self.grid[thing])
