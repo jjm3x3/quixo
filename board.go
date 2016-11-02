@@ -128,56 +128,37 @@ func (self *board) makeMove(pos, dest int) error {
 	// fmt.Printf("move to?: %v\n", pos)
 	// fmt.Printf("wats the move %c\n", self.whoseTurn())
 
+	sanityCheck(pos, dest) // not an ideal location but this is
+	//about as good as it gets right now
 	var row int
 	if isTop(pos) || isBottom(pos) {
+		col := pos
+		row = 0
+		if isBottom(pos) {
+			col = pos - 5
+			row = 4
+		}
+		// fmt.Printf("where are we moving? (%v,%v)\n", row, col)
+
+		if self.checkValidPeiceSelection(row, col) {
+			return errors.New("that is an illegal Move")
+		}
+
 		if isBottom(dest) || isTop(dest) {
-			col := pos
-			row = 0
-			if isBottom(pos) {
-				col = pos - 5
-				row = 4
-			}
-			// fmt.Printf("where are we moving? (%v,%v)\n", row, col)
-
-			if self.checkValidPeiceSelection(row, col) {
-				return errors.New("that is an illegal Move")
-			}
-
 			self.cycleColumn(pos, col)
 
+			// return nil // don't know why this can't return nil
 		} else { // this is for starts on the top and bottom
 			// and a move right or left
-			if isRight(dest) {
-				if pos == 4 || pos == 9 {
-					return errors.New("This move is nonsesical")
-				}
-
-			}
-			if isLeft(dest) {
-				if pos == 0 || pos == 5 {
-					return errors.New("This move is nonsesical")
-				}
-			}
-			row := 0
-			col := pos
-			if isBottom(pos) {
-				col = pos - 5
-				row = 4
-			}
-			// fmt.Printf("makeing a move from here: (%v,%v)\n", row, col)
-			if self.checkValidPeiceSelection(row, col) {
-				return errors.New("that is an illegal Move")
-			}
 			self.cycleRow(row, col, dest)
 			return nil
 		}
 
 	} else if isRight(dest) || isLeft(dest) { // check for pos and dest same TODO
 		var col int
-		if isRight(dest) {
-			row = pos - 10
-			col = 0
-		} else {
+		col = 0
+		row = pos - 10
+		if !isRight(dest) {
 			row = pos - 15
 			col = 4
 		}
@@ -260,4 +241,19 @@ func (self *board) equals(other *board) bool {
 		}
 	}
 	return true
+}
+
+func sanityCheck(pos, dest int) error {
+	if isRight(dest) {
+		if pos == 4 || pos == 9 {
+			return errors.New("This move is nonsesical")
+		}
+
+	}
+	if isLeft(dest) {
+		if pos == 0 || pos == 5 {
+			return errors.New("This move is nonsesical")
+		}
+	}
+	return nil
 }
