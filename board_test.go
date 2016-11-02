@@ -1,11 +1,12 @@
 package main
 
 import (
-	_ "fmt"
+	"fmt"
 	"testing"
 )
 
 func TestMoves(t *testing.T) {
+	fmt.Printf("")
 
 	theBoard := newBoard(nil)
 
@@ -264,7 +265,7 @@ func TestUperLeftCorner(t *testing.T) {
 	}
 }
 
-func TestUperEdge(t *testing.T) {
+func TestUperEdgeRight(t *testing.T) {
 	layout := [][]rune{
 		[]rune{'O', 'X', '#', 'O', 'O'},
 		[]rune{'#', '#', '#', '#', '#'},
@@ -281,6 +282,22 @@ func TestUperEdge(t *testing.T) {
 	}
 }
 
+func TestUperEdgeLeft(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'O', 'X', '#', 'O', 'O'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(2, 10)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(0, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
 func TestUpperRightCorner(t *testing.T) {
 	theBoard := newBoard(nil)
 	err := theBoard.makeMove(4, 10)
@@ -288,6 +305,62 @@ func TestUpperRightCorner(t *testing.T) {
 		t.Errorf("This should not fail!")
 	}
 	if theBoard.getPosition(0, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerLeftCorner(t *testing.T) {
+	theBoard := newBoard(nil)
+	err := theBoard.makeMove(5, 19)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 4) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerEdgeRight(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'O', 'X', '#', 'O', 'O'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(7, 19)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 4) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerEdgeLeft(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'O', 'X', '#', 'O', 'O'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(7, 14)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerRightCorner(t *testing.T) {
+	theBoard := newBoard(nil)
+	err := theBoard.makeMove(9, 14)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 0) != 'X' {
 		t.Errorf("There really should be an X in this position")
 	}
 }

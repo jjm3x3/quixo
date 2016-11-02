@@ -144,33 +144,11 @@ func (self *board) makeMove(pos, dest int) error {
 			if checkValidPeiceSelection(oldPeice, theMove) {
 				return errors.New("that is an illegal Move")
 			}
-			for row = 0; row < 5; row++ {
-				rowCur := row
-				if isBottom(pos) {
-					rowCur = 4 - row
-					// fmt.Printf("oporate on which row: %v\n", row)
-				}
-				restOfRow := self.grid[rowCur][col+1 : len(self.grid[0])]
-				oldPeice = self.grid[rowCur][col]
-				startOfRow := self.grid[rowCur][0:col]
-				var newRow []rune
-				newRow = append(newRow, startOfRow...)
-				if (isTop(pos) && rowCur == 4) || isBottom(pos) && rowCur == 0 {
-					newRow = append(newRow, theMove)
-				} else {
-					var newPeice rune
-					if isBottom(pos) {
-						newPeice = self.grid[rowCur-1][col]
-					} else {
-						newPeice = self.grid[rowCur+1][col]
-					}
-					newRow = append(newRow, newPeice)
-				}
-				newRow = append(newRow, restOfRow...)
-				self.grid[rowCur] = newRow
-			}
 
-		} else {
+			self.cycleColumn(pos, col)
+
+		} else { // this is for starts on the top and bottom
+			// and a move right or left
 			row := 0
 			if isRight(dest) {
 				if pos == 4 || pos == 9 {
@@ -182,23 +160,18 @@ func (self *board) makeMove(pos, dest int) error {
 				if pos == 0 || pos == 5 {
 					return errors.New("This move is nonsesical")
 				}
-				row = 4
 			}
-			var newRow []rune
 			col := pos
 			if isBottom(pos) {
 				col = pos - 5
+				row = 4
 			}
-			fmt.Printf("makeing a move from here: (%v,%v)\n", row, col)
+			// fmt.Printf("makeing a move from here: (%v,%v)\n", row, col)
 			oldPeice := self.grid[row][col]
 			if checkValidPeiceSelection(oldPeice, theMove) {
 				return errors.New("that is an illegal Move")
 			}
-			newRow = append(newRow, self.grid[row][0:pos]...)
-			newRow = append(newRow, self.grid[row][pos+1:len(self.grid[0])]...)
-			newRow = append(newRow, theMove)
-			self.grid[row] = newRow
-
+			self.cycleRow(row, col, dest)
 			return nil
 		}
 
@@ -216,15 +189,17 @@ func (self *board) makeMove(pos, dest int) error {
 		self.grid[row] = newRow
 	} else if isRight(pos) && isLeft(dest) {
 		row = pos - 15
+		col := 4
 
-		var newRow []rune
 		oldPeice := self.grid[row][len(self.grid)-1]
 		if checkValidPeiceSelection(oldPeice, theMove) {
 			return errors.New("that is an illegal Move")
 		}
-		newRow = append(newRow, theMove) //self.grid[row][0])
-		newRow = append(newRow, self.grid[row][0:len(self.grid)-1]...)
-		self.grid[row] = newRow
+		self.cycleRow(row, col, dest)
+		// var newRow []rune
+		// newRow = append(newRow, theMove) //self.grid[row][0])
+		// newRow = append(newRow, self.grid[row][0:len(self.grid)-1]...)
+		// self.grid[row] = newRow
 
 	} else {
 		fmt.Println("this move is not programmed yet")
@@ -233,6 +208,46 @@ func (self *board) makeMove(pos, dest int) error {
 	// switch the turn
 	self.turn = !self.turn
 	return nil
+}
+
+func (self *board) cycleRow(row, col, dest int) {
+	var newRow []rune
+	if isLeft(dest) {
+		newRow = append(newRow, self.whoseTurn())
+	}
+	newRow = append(newRow, self.grid[row][0:col]...)
+	newRow = append(newRow, self.grid[row][col+1:len(self.grid[row])]...)
+	if isRight(dest) {
+		newRow = append(newRow, self.whoseTurn())
+	}
+	self.grid[row] = newRow
+}
+
+func (self *board) cycleColumn(pos, col int) {
+	for row := 0; row < 5; row++ {
+		rowCur := row
+		if isBottom(pos) {
+			rowCur = 4 - row
+			// fmt.Printf("oporate on which row: %v\n", row)
+		}
+		restOfRow := self.grid[rowCur][col+1 : len(self.grid[0])]
+		startOfRow := self.grid[rowCur][0:col]
+		var newRow []rune
+		newRow = append(newRow, startOfRow...)
+		if (isTop(pos) && rowCur == 4) || isBottom(pos) && rowCur == 0 {
+			newRow = append(newRow, self.whoseTurn())
+		} else {
+			var newPeice rune
+			if isBottom(pos) {
+				newPeice = self.grid[rowCur-1][col]
+			} else {
+				newPeice = self.grid[rowCur+1][col]
+			}
+			newRow = append(newRow, newPeice)
+		}
+		newRow = append(newRow, restOfRow...)
+		self.grid[rowCur] = newRow
+	}
 }
 
 func checkValidPeiceSelection(selectedPeice, theMove rune) bool {
