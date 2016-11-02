@@ -90,7 +90,7 @@ func TestMoves(t *testing.T) {
 	}
 	err = theBoard.makeMove(15, 10)
 	if err != nil {
-		t.Errorf("This should be just fine")
+		t.Errorf("This should be just fine: The err: %v", err)
 	}
 	if theBoard.getPosition(0, 0) != 'X' {
 		t.Errorf("this should be a plenty fine counter move")
@@ -254,13 +254,125 @@ func TestForNoWinWhenBothWin(t *testing.T) {
 	}
 }
 
-func TestUperLeftCorner(t *testing.T) {
+func TestUperLeftCornerTopBottomStart(t *testing.T) {
 	theBoard := newBoard(nil)
 	err := theBoard.makeMove(0, 15)
 	if err != nil {
 		t.Errorf("This should not fail!")
 	}
 	if theBoard.getPosition(0, 4) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestUperEdgeRightTopBottomStart(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'O', 'X', '#', 'O', 'O'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(2, 15)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(0, 4) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestUperEdgeLeftTopBottomStart(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'O', 'X', '#', 'O', 'O'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(2, 10)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(0, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+func TestUpperRightCornerTopBottomStart(t *testing.T) {
+	theBoard := newBoard(nil)
+	err := theBoard.makeMove(4, 10)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(0, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerLeftCornerTopBottomStart(t *testing.T) {
+	theBoard := newBoard(nil)
+	err := theBoard.makeMove(5, 19)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 4) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerEdgeRightTopBottomStart(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'O', 'X', '#', 'O', 'O'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(7, 19)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 4) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerEdgeLeftTopBottomStart(t *testing.T) {
+	layout := [][]rune{
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'#', '#', '#', '#', '#'},
+		[]rune{'O', 'X', '#', 'O', 'O'}}
+	theBoard := newBoard(layout)
+	err := theBoard.makeMove(7, 14)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestLowerRightCornerTopBottomStart(t *testing.T) {
+	theBoard := newBoard(nil)
+	err := theBoard.makeMove(9, 14)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	if theBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("There really should be an X in this position")
+	}
+}
+
+func TestUperLeftCornerLeftStart(t *testing.T) {
+	theBoard := newBoard(nil)
+	err := theBoard.makeMove(10, 5)
+	if err != nil {
+		t.Errorf("This should not fail!")
+	}
+	theBoard.printBoard()
+	if theBoard.getPosition(4, 0) != 'X' {
 		t.Errorf("There really should be an X in this position")
 	}
 }
