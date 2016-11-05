@@ -145,7 +145,6 @@ func (self *board) makeMove(pos, dest int) error {
 		}
 
 		if isBottom(dest) || isTop(dest) {
-			fmt.Printf("what row am I putting here? %v\n", row)
 			self.cycleColumn(pos, row, col, dest)
 
 			// return nil // don't know why this can't return nil
@@ -176,8 +175,12 @@ func (self *board) makeMove(pos, dest int) error {
 			col = 4
 			row = pos - 15
 		}
+
+		if self.checkValidPeiceSelection(row, col) {
+			return errors.New("that is an illegal Move")
+		}
+
 		self.cycleColumn(pos, row, col, dest)
-		fmt.Println("this is the move in question")
 	} else {
 		fmt.Println("this move is not programmed yet")
 	}
@@ -202,7 +205,6 @@ func (self *board) cycleRow(row, col, dest int) {
 
 func (self *board) cycleColumn(pos, moveRow, col, dest int) {
 	var row int
-	fmt.Printf("what is this move %v\n", moveRow)
 	if moveRow != 4 {
 		row = moveRow
 	}
@@ -217,14 +219,12 @@ func (self *board) cycleColumn(pos, moveRow, col, dest int) {
 		var newRow []rune
 		newRow = append(newRow, startOfRow...)
 		if (rowCur == 4 && isBottom(dest)) || (rowCur == 0 && isTop(dest)) {
-			fmt.Println("How often does this happen?")
 			newRow = append(newRow, self.whoseTurn())
 		} else {
 			var newPeice rune
 			if isTop(dest) {
 				newPeice = self.grid[rowCur-1][col]
 			} else {
-				fmt.Printf("what is this? %v\n", row)
 				newPeice = self.grid[rowCur+1][col]
 			}
 			newRow = append(newRow, newPeice)

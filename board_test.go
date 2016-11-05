@@ -16,12 +16,10 @@ func TestMoves(t *testing.T) {
 	if theBoard.getPosition(4, 0) != 'X' {
 		t.Errorf("this should be a plenty fine opening move")
 	}
-	theBoard.printBoard()
 	err := theBoard.makeMove(0, 5)
 	if err != nil {
 		t.Logf("this is a bad move?!: \n%v\n", err)
 	}
-	theBoard.printBoard()
 	if theBoard.getPosition(4, 0) != 'O' {
 		t.Errorf("this should be a plenty fine counter move")
 	}
@@ -486,7 +484,6 @@ func TestLowerRightCornerFromRight(t *testing.T) {
 	if err != nil {
 		t.Errorf("This should not fail!")
 	}
-	theBoard.printBoard()
 	if theBoard.getPosition(0, 4) != 'X' {
 		t.Errorf("There really should be an X in this position")
 	}
