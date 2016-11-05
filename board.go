@@ -145,7 +145,8 @@ func (self *board) makeMove(pos, dest int) error {
 		}
 
 		if isBottom(dest) || isTop(dest) {
-			self.cycleColumn(pos, col)
+			fmt.Printf("what row am I putting here? %v\n", row)
+			self.cycleColumn(pos, row, col, dest)
 
 			// return nil // don't know why this can't return nil
 		} else { // this is for starts on the top and bottom
@@ -168,6 +169,15 @@ func (self *board) makeMove(pos, dest int) error {
 		}
 
 		self.cycleRow(row, col, dest)
+	} else if isBottom(dest) || isTop(dest) {
+		col := 0
+		row := pos - 10
+		if isRight(pos) {
+			col = 4
+			row = pos - 15
+		}
+		self.cycleColumn(pos, row, col, dest)
+		fmt.Println("this is the move in question")
 	} else {
 		fmt.Println("this move is not programmed yet")
 	}
@@ -190,10 +200,15 @@ func (self *board) cycleRow(row, col, dest int) {
 	self.grid[row] = newRow
 }
 
-func (self *board) cycleColumn(pos, col int) {
-	for row := 0; row < 5; row++ {
+func (self *board) cycleColumn(pos, moveRow, col, dest int) {
+	var row int
+	fmt.Printf("what is this move %v\n", moveRow)
+	if moveRow != 4 {
+		row = moveRow
+	}
+	for ; row < 5; row++ {
 		rowCur := row
-		if isBottom(pos) {
+		if isTop(dest) {
 			rowCur = 4 - row
 			// fmt.Printf("oporate on which row: %v\n", row)
 		}
@@ -201,13 +216,15 @@ func (self *board) cycleColumn(pos, col int) {
 		startOfRow := self.grid[rowCur][0:col]
 		var newRow []rune
 		newRow = append(newRow, startOfRow...)
-		if (isTop(pos) && rowCur == 4) || isBottom(pos) && rowCur == 0 {
+		if (rowCur == 4 && isBottom(dest)) || (rowCur == 0 && isTop(dest)) {
+			fmt.Println("How often does this happen?")
 			newRow = append(newRow, self.whoseTurn())
 		} else {
 			var newPeice rune
-			if isBottom(pos) {
+			if isTop(dest) {
 				newPeice = self.grid[rowCur-1][col]
 			} else {
+				fmt.Printf("what is this? %v\n", row)
 				newPeice = self.grid[rowCur+1][col]
 			}
 			newRow = append(newRow, newPeice)
