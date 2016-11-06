@@ -19,41 +19,46 @@ func main() {
 	theBoard := newBoard(nil)
 	theBoard.makeMove(0, 5)
 
-	moveList := getMoves()
+	getMoves()
 
-	nextState := make([]*board, 46)
+	nextStates := getNextStates(theBoard)
 
-	fmt.Printf("how long is move list %v\n", len(moveList))
-	for i := 0; i < len(moveList); i++ {
-		theMove := moveList[i]
-		src := theMove[0]
-		dest := theMove[1]
-		err := theBoard.checkMove(src, dest)
-		if err == nil {
-			newState := copy(theBoard)
-			newState.makeMove(src, dest)
-			nextState[i] = newState
+	fmt.Printf("show me what you look like:\n %v\n", nextStates)
+
+	newNextState := make([][]*board, len(nextStates))
+	for i := 0; i < len(nextStates); i++ {
+		startState := nextStates[i]
+		if startState != nil {
+			newNextState[i] = getNextStates(startState)
 		}
 	}
+	fmt.Printf("lets see theseNext moves:\n %v\n", newNextState)
 
-	fmt.Printf("show me what you look like:\n %v\n", nextState)
+	// defer func() {
+	// 	err := recover()
+	// 	if err != nil {
+	// 		fmt.Printf("wtf happened:\n%v", err)
+	// 	}
+	// }()
 
-	newNextState := make([][]*board, len(nextState))
-	for i := 0; i < len(nextState); i++ {
-		startState := nextState[i]
-		newNextState[i] = make([]*board, len(moveList))
-		for j := 0; j < len(moveList); j++ {
-			if startState != nil {
-				err := startState.checkMove(moveList[j][0], moveList[j][1])
-				if err == nil {
-					newState := copy(startState)
-					newState.makeMove(moveList[j][0], moveList[j][1])
-					newNextState[i][j] = newState
+	fmt.Printf("can I even get this?!:\n %v\n", newNextState[0])
+
+	anotherNextState := make([][][]*board, len(newNextState))
+	for i := 0; i < len(newNextState); i++ {
+		fmt.Printf("how could this be out of bounds?!: %v\n", i)
+		someNextStates := newNextState[i]
+		if someNextStates != nil {
+			anotherNextState[i] = make([][]*board, len(newNextState[i]))
+			for j := 0; j < len(someNextStates); j++ {
+				someBoard := someNextStates[j]
+				if someBoard != nil {
+					anotherNextState[i][j] = getNextStates(someBoard)
 				}
 			}
 		}
 	}
-	fmt.Printf("lets see theseNext moves:\n %v\n", newNextState)
+
+	fmt.Printf("finally a few moves down:\n%v\n", anotherNextState)
 
 	possibleMoves := howManyMoves(theBoard)
 	fmt.Printf("how many moves can I make?: %v\n", possibleMoves)
@@ -62,6 +67,25 @@ func main() {
 
 	// playGame()
 
+}
+
+func getNextStates(startState *board) []*board {
+
+	nextStates := make([]*board, len(theMoveList))
+
+	for i := 0; i < len(theMoveList); i++ {
+		theMove := theMoveList[i]
+		src := theMove[0]
+		dest := theMove[1]
+		err := startState.checkMove(src, dest)
+		if err == nil {
+			newState := copy(startState)
+			newState.makeMove(src, dest)
+			nextStates[i] = newState
+		}
+	}
+
+	return nextStates
 }
 
 func howManyMoves(board *board) int {
