@@ -18,12 +18,15 @@ func main() {
 	getMoves()
 
 	theBoard := newBoard(nil)
-	theBoard.makeMove(0, 5)
 
 	for {
 		move := findNextMove(theBoard)
+		// if theBoard.turn == true {
+		// 	promptForMove(theBoard)
+		// } else {
 		theBoard.makeMove(move[0], move[1])
 		checkForWin(theBoard)
+		// }
 	}
 
 	// oponents next moves based on mine
@@ -91,8 +94,8 @@ func findNextMove(theBoard *board) []int {
 			numPeices := howManyPeices(nextStates[i], theBoard.whoseTurn())
 			if numPeices > mostPeices {
 				mostPeices = numPeices
+				bestMove = theMoveList[i]
 			}
-			bestMove = theMoveList[i]
 		}
 	}
 
@@ -183,25 +186,30 @@ func playGame() {
 	theBoard := newBoard(nil)
 
 	for {
-		theBoard.printBoard()
-
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Printf("select a move\n")
-		text, _ := reader.ReadString('\n')
-		move, err := strconv.Atoi(text[0 : len(text)-1])
-		if err != nil {
-			fmt.Printf("There was an error parsing the move: %v\n", err)
-		}
-		fmt.Printf("select a destination\n")
-		text, _ = reader.ReadString('\n')
-		dest, err := strconv.Atoi(text[0 : len(text)-1])
-		if err != nil {
-			fmt.Printf("There was an error parsing the move: %v\n", err)
-		}
-		// fmt.Printf("what is the number %d\n", move)
-		tryMove(theBoard, move, dest)
-
+		promptForMove(theBoard)
+		checkForWin(theBoard)
 	}
+}
+
+func promptForMove(theBoard *board) {
+
+	theBoard.printBoard()
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Printf("select a move\n")
+	text, _ := reader.ReadString('\n')
+	move, err := strconv.Atoi(text[0 : len(text)-1])
+	if err != nil {
+		fmt.Printf("There was an error parsing the move: %v\n", err)
+	}
+	fmt.Printf("select a destination\n")
+	text, _ = reader.ReadString('\n')
+	dest, err := strconv.Atoi(text[0 : len(text)-1])
+	if err != nil {
+		fmt.Printf("There was an error parsing the move: %v\n", err)
+	}
+	// fmt.Printf("what is the number %d\n", move)
+	tryMove(theBoard, move, dest)
 }
 
 func tryMove(theBoard *board, x, y int) {
@@ -213,7 +221,6 @@ func tryMove(theBoard *board, x, y int) {
 		fmt.Printf("%c can't move %v\n", theBoard.whoseTurn(), x)
 		panic("ilegal mOVE!")
 	}
-	checkForWin(theBoard)
 }
 
 func checkForWin(board *board) {
@@ -222,5 +229,6 @@ func checkForWin(board *board) {
 		board.printBoard()
 		os.Exit(0)
 	}
+	board.printBoard()
 
 }
