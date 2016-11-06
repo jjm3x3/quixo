@@ -151,42 +151,36 @@ func (self *board) makeMove(pos, dest int) error {
 
 	sanityCheck(pos, dest) // not an ideal location but this is
 	//about as good as it gets right now
-	var row int
+	row, col := getTargetPeice(pos, dest)
+	// fmt.Printf("where are we moving? (%v,%v)\n", row, col)
+
+	if self.checkValidPeiceSelection(row, col) {
+		return errors.New("that is an illegal Move")
+	}
+	self.PreformMove(pos, dest, row, col)
+
+	// switch the turn
+	self.turn = !self.turn
+	return nil
+}
+
+func (self *board) prefomMove(pos, dest, row, col int) {
+
 	if isTop(pos) || isBottom(pos) {
-		row, col := getTargetPeice(pos, dest)
-		// fmt.Printf("where are we moving? (%v,%v)\n", row, col)
-
-		if self.checkValidPeiceSelection(row, col) {
-			return errors.New("that is an illegal Move")
-		}
-
 		if isBottom(dest) || isTop(dest) {
 			self.cycleColumn(pos, row, col, dest)
-
-			// return nil // don't know why this can't return nil
 		} else { // this is for starts on the top and bottom
 			// and a move right or left
 			self.cycleRow(row, col, dest)
-			return nil
 		}
 
 	} else { // check for pos and dest same TODO
-		row, col := getTargetPeice(pos, dest)
-		// fmt.Printf("which row? %v\n", row)
-		if self.checkValidPeiceSelection(row, col) {
-			return errors.New("that is an illegal Move")
-		}
 		if isBottom(dest) || isTop(dest) {
 			self.cycleColumn(pos, row, col, dest)
 		} else {
 			self.cycleRow(row, col, dest)
 		}
-
 	}
-
-	// switch the turn
-	self.turn = !self.turn
-	return nil
 }
 
 func (self *board) cycleRow(row, col, dest int) {
