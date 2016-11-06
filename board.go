@@ -124,6 +124,27 @@ func isTop(move int) bool {
 	return move >= 0 && move < 5
 }
 
+func getTargetPeice(pos, dest int) (int, int) {
+	var row int
+	var col int
+	if isTop(pos) || isBottom(pos) {
+		col = pos
+		row = 0
+		if isBottom(pos) {
+			col = pos - 5
+			row = 4
+		}
+	} else { // check for pos and dest same TODO
+		col = 0
+		row = pos - 10
+		if isRight(pos) {
+			row = pos - 15
+			col = 4
+		}
+	}
+	return row, col
+}
+
 func (self *board) makeMove(pos, dest int) error {
 	// fmt.Printf("move to?: %v\n", pos)
 	// fmt.Printf("wats the move %c\n", self.whoseTurn())
@@ -132,12 +153,7 @@ func (self *board) makeMove(pos, dest int) error {
 	//about as good as it gets right now
 	var row int
 	if isTop(pos) || isBottom(pos) {
-		col := pos
-		row = 0
-		if isBottom(pos) {
-			col = pos - 5
-			row = 4
-		}
+		row, col := getTargetPeice(pos, dest)
 		// fmt.Printf("where are we moving? (%v,%v)\n", row, col)
 
 		if self.checkValidPeiceSelection(row, col) {
@@ -154,35 +170,18 @@ func (self *board) makeMove(pos, dest int) error {
 			return nil
 		}
 
-	} else if isRight(dest) || isLeft(dest) { // check for pos and dest same TODO
-		var col int
-		col = 0
-		row = pos - 10
-		if !isRight(dest) {
-			row = pos - 15
-			col = 4
-		}
+	} else { // check for pos and dest same TODO
+		row, col := getTargetPeice(pos, dest)
 		// fmt.Printf("which row? %v\n", row)
 		if self.checkValidPeiceSelection(row, col) {
 			return errors.New("that is an illegal Move")
 		}
-
-		self.cycleRow(row, col, dest)
-	} else if isBottom(dest) || isTop(dest) {
-		col := 0
-		row := pos - 10
-		if isRight(pos) {
-			col = 4
-			row = pos - 15
+		if isBottom(dest) || isTop(dest) {
+			self.cycleColumn(pos, row, col, dest)
+		} else {
+			self.cycleRow(row, col, dest)
 		}
 
-		if self.checkValidPeiceSelection(row, col) {
-			return errors.New("that is an illegal Move")
-		}
-
-		self.cycleColumn(pos, row, col, dest)
-	} else {
-		fmt.Println("this move is not programmed yet")
 	}
 
 	// switch the turn
