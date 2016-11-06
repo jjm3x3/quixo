@@ -15,24 +15,26 @@ var (
 )
 
 func main() {
+	getMoves()
 
 	theBoard := newBoard(nil)
 	theBoard.makeMove(0, 5)
 
-	getMoves()
-
-	nextStates := getNextStates(theBoard)
-
-	fmt.Printf("show me what you look like:\n %v\n", nextStates)
-
-	newNextState := make([][]*board, len(nextStates))
-	for i := 0; i < len(nextStates); i++ {
-		startState := nextStates[i]
-		if startState != nil {
-			newNextState[i] = getNextStates(startState)
-		}
+	for {
+		move := findNextMove(theBoard)
+		theBoard.makeMove(move[0], move[1])
+		checkForWin(theBoard)
 	}
-	fmt.Printf("lets see theseNext moves:\n %v\n", newNextState)
+
+	// oponents next moves based on mine
+	// newNextState := make([][]*board, len(nextStates))
+	// for i := 0; i < len(nextStates); i++ {
+	// 	startState := nextStates[i]
+	// 	if startState != nil {
+	// 		newNextState[i] = getNextStates(startState)
+	// 	}
+	// }
+	// fmt.Printf("lets see theseNext moves:\n %v\n", newNextState)
 
 	// defer func() {
 	// 	err := recover()
@@ -41,24 +43,23 @@ func main() {
 	// 	}
 	// }()
 
-	fmt.Printf("can I even get this?!:\n %v\n", newNextState[0])
+	// my next moves based on my oponenets nexted moves based on mine
+	// anotherNextState := make([][][]*board, len(newNextState))
+	// for i := 0; i < len(newNextState); i++ {
+	// 	fmt.Printf("how could this be out of bounds?!: %v\n", i)
+	// 	someNextStates := newNextState[i]
+	// 	if someNextStates != nil {
+	// 		anotherNextState[i] = make([][]*board, len(newNextState[i]))
+	// 		for j := 0; j < len(someNextStates); j++ {
+	// 			someBoard := someNextStates[j]
+	// 			if someBoard != nil {
+	// 				anotherNextState[i][j] = getNextStates(someBoard)
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	anotherNextState := make([][][]*board, len(newNextState))
-	for i := 0; i < len(newNextState); i++ {
-		fmt.Printf("how could this be out of bounds?!: %v\n", i)
-		someNextStates := newNextState[i]
-		if someNextStates != nil {
-			anotherNextState[i] = make([][]*board, len(newNextState[i]))
-			for j := 0; j < len(someNextStates); j++ {
-				someBoard := someNextStates[j]
-				if someBoard != nil {
-					anotherNextState[i][j] = getNextStates(someBoard)
-				}
-			}
-		}
-	}
-
-	fmt.Printf("finally a few moves down:\n%v\n", anotherNextState)
+	// fmt.Printf("finally a few moves down:\n%v\n", anotherNextState)
 
 	possibleMoves := howManyMoves(theBoard)
 	fmt.Printf("how many moves can I make?: %v\n", possibleMoves)
@@ -67,6 +68,35 @@ func main() {
 
 	// playGame()
 
+}
+
+func findNextMove(theBoard *board) []int {
+
+	nextStates := getNextStates(theBoard)
+
+	// fmt.Printf("show me what you look like:\n %v\n", nextStates)
+
+	var (
+		bestMove []int
+		// mostMoves int
+		mostPeices int
+	)
+	for i := 0; i < len(nextStates); i++ {
+		if nextStates[i] != nil {
+			// newMoves := howManyMoves(nextStates[i])
+			// if newMoves > mostMoves {
+			// 	mostMoves = newMoves
+			// }
+
+			numPeices := howManyPeices(nextStates[i], theBoard.whoseTurn())
+			if numPeices > mostPeices {
+				mostPeices = numPeices
+			}
+			bestMove = theMoveList[i]
+		}
+	}
+
+	return bestMove
 }
 
 func getNextStates(startState *board) []*board {
@@ -96,6 +126,18 @@ func howManyMoves(board *board) int {
 		}
 	}
 	return possibleMoves
+}
+
+func howManyPeices(board *board, player rune) int {
+	result := 0
+	for i := 0; i < len(board.grid); i++ {
+		for j := 0; j < len(board.grid[i]); j++ {
+			if board.getPosition(i, j) == player {
+				result++
+			}
+		}
+	}
+	return result
 }
 
 func getMoves() [][]int {
@@ -171,9 +213,14 @@ func tryMove(theBoard *board, x, y int) {
 		fmt.Printf("%c can't move %v\n", theBoard.whoseTurn(), x)
 		panic("ilegal mOVE!")
 	}
-	if theBoard.checkForWin() != '#' {
+	checkForWin(theBoard)
+}
+
+func checkForWin(board *board) {
+	if board.checkForWin() != '#' {
 		fmt.Printf("someone Won\n")
-		theBoard.printBoard()
+		board.printBoard()
 		os.Exit(0)
 	}
+
 }
