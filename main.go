@@ -21,12 +21,12 @@ func main() {
 
 	for {
 		move := findNextMove(theBoard)
-		// if theBoard.turn == true {
-		// 	promptForMove(theBoard)
-		// } else {
-		theBoard.makeMove(move[0], move[1])
-		checkForWin(theBoard)
-		// }
+		if theBoard.turn == true {
+			promptForMove(theBoard)
+		} else {
+			theBoard.makeMove(move[0], move[1])
+			checkForWin(theBoard)
+		}
 	}
 
 	// oponents next moves based on mine
@@ -80,13 +80,13 @@ func findNextMove(theBoard *board) []int {
 	// fmt.Printf("show me what you look like:\n %v\n", nextStates)
 
 	var (
-		bestMove []int
-		// mostMoves int
+		bestMove   []int
+		mostMoves  int
 		mostPeices int
 	)
 	for i := 0; i < len(nextStates); i++ {
 		if nextStates[i] != nil {
-			// newMoves := howManyMoves(nextStates[i])
+			newMoves := howManyMoves(nextStates[i])
 			// if newMoves > mostMoves {
 			// 	mostMoves = newMoves
 			// }
@@ -95,7 +95,10 @@ func findNextMove(theBoard *board) []int {
 			if numPeices > mostPeices {
 				mostPeices = numPeices
 				bestMove = theMoveList[i]
+			} else if numPeices == mostPeices && newMoves >= mostMoves {
+				bestMove = theMoveList[i]
 			}
+
 		}
 	}
 
