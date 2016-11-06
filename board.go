@@ -266,6 +266,24 @@ func (self *board) equals(other *board) bool {
 	return true
 }
 
+func copy(theBoard *board) *board {
+	newGrid := [][]rune{
+		make([]rune, 5),
+		make([]rune, 5),
+		make([]rune, 5),
+		make([]rune, 5),
+		make([]rune, 5)}
+	oldGrid := theBoard.grid
+	for i := 0; i < len(oldGrid); i++ {
+		for j := 0; j < len(oldGrid[i]); j++ {
+			// fmt.Printf("copying peice %v,%v\n", i, j)
+			newGrid[i][j] = oldGrid[i][j]
+		}
+	}
+	result := &board{grid: newGrid, turn: theBoard.turn}
+	return result
+}
+
 func sanityCheck(pos, dest int) error {
 	if isRight(dest) {
 		if pos == 4 || pos == 9 {

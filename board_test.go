@@ -488,3 +488,28 @@ func TestLowerRightCornerFromRight(t *testing.T) {
 		t.Errorf("There really should be an X in this position")
 	}
 }
+
+func TestCopyingOfABoard(t *testing.T) {
+	firstBoard := newBoard(nil)
+	firstBoard.makeMove(0, 5)
+	secondBoard := copy(firstBoard)
+	if secondBoard.getPosition(4, 0) != 'X' {
+		t.Errorf("This place should have an X")
+	}
+	if secondBoard.turn != firstBoard.turn {
+		t.Errorf("They should be on the same turn")
+	}
+}
+
+func TestCopyIsDetatched(t *testing.T) {
+	firstBoard := newBoard(nil)
+	firstBoard.makeMove(0, 5)
+	secondBoard := copy(firstBoard)
+	secondBoard.makeMove(0, 5)
+	if secondBoard.getPosition(4, 0) != 'O' {
+		t.Errorf("This peice should be an O")
+	}
+	if firstBoard.getPosition(4, 0) == 'O' {
+		t.Errorf("This should not have changed")
+	}
+}
