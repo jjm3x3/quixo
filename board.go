@@ -145,11 +145,12 @@ func getTargetPeice(pos, dest int) (int, int) {
 	return row, col
 }
 
-func (self *board) makeMove(pos, dest int) error {
-	// fmt.Printf("move to?: %v\n", pos)
-	// fmt.Printf("wats the move %c\n", self.whoseTurn())
+func (self *board) checkMove(pos, dest int) error {
 
-	sanityCheck(pos, dest) // not an ideal location but this is
+	err := sanityCheck(pos, dest) // not an ideal location but this is
+	if err != nil {
+		return err
+	}
 	//about as good as it gets right now
 	row, col := getTargetPeice(pos, dest)
 	// fmt.Printf("where are we moving? (%v,%v)\n", row, col)
@@ -157,14 +158,26 @@ func (self *board) makeMove(pos, dest int) error {
 	if self.checkValidPeiceSelection(row, col) {
 		return errors.New("that is an illegal Move")
 	}
-	self.PreformMove(pos, dest, row, col)
+	return nil
+}
+
+func (self *board) makeMove(pos, dest int) error {
+	// fmt.Printf("move to?: %v\n", pos)
+	// fmt.Printf("wats the move %c\n", self.whoseTurn())
+
+	err := self.checkMove(pos, dest)
+	if err != nil {
+		return err
+	}
+	self.preformMove(pos, dest)
 
 	// switch the turn
 	self.turn = !self.turn
 	return nil
 }
 
-func (self *board) prefomMove(pos, dest, row, col int) {
+func (self *board) preformMove(pos, dest int) {
+	row, col := getTargetPeice(pos, dest)
 
 	if isTop(pos) || isBottom(pos) {
 		if isBottom(dest) || isTop(dest) {
