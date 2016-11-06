@@ -3,12 +3,65 @@ package main
 import (
 	"bufio"
 	_ "bytes"
+	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 )
 
 func main() {
+
+	theBoard := newBoard(nil)
+	theBoard.makeMove(0, 5)
+
+	moveList := getMoves()
+
+	for i := 0; i < len(moveList); i++ {
+		theMove := moveList[i]
+		src, err := strconv.Atoi(theMove[0])
+		if err != nil {
+			log.Printf("problem casting src is not a number: %v\n", err)
+		}
+		dest, err := strconv.Atoi(theMove[1])
+		if err != nil {
+			log.Printf("problem casting src is not a number: %v\n", err)
+		}
+		err = theBoard.makeMove(src, dest)
+		if err != nil {
+
+		}
+	}
+
+	// getMoves()
+
+	// playGame()
+
+}
+
+func getMoves() [][]string {
+
+	file, err := os.Open("posibleMoves.csv")
+	defer file.Close()
+	if err != nil {
+		log.Printf("Error opein move list: %v\n", err)
+		panic("I cannot go on!")
+	}
+
+	r := csv.NewReader(file)
+	moves, err := r.ReadAll()
+	if err != nil {
+		log.Printf("Error opein move list: %v\n", err)
+	}
+
+	for i := 0; i < len(moves); i++ {
+		fmt.Printf("I see a move:  %v\n", moves[i])
+	}
+
+	return moves
+}
+
+func playGame() {
 
 	theBoard := newBoard(nil)
 
@@ -32,7 +85,6 @@ func main() {
 		tryMove(theBoard, move, dest)
 
 	}
-
 }
 
 func tryMove(theBoard *board, x, y int) {
