@@ -307,7 +307,14 @@ func tryMove(theBoard *board, x, y int) {
 
 func checkForWin(board *board) {
 	if board.checkForWin() != '#' {
-		fmt.Printf("someone Won\n")
+		// need to do the oposite because checkForWin only happen
+		// after a move is made implying that whose ever turn
+		// turn it is is likely the looser
+		if board.whoseTurn() == 'X' {
+			fmt.Printf("O won\n")
+		} else {
+			fmt.Printf("X won\n")
+		}
 		board.printBoard()
 		os.Exit(0)
 	}
