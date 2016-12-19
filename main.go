@@ -62,19 +62,32 @@ func findNextMove(theBoard *board, aiKind int) []int {
 }
 
 func neuralNetwork(theBoard *board) []int {
-	numberOfMoves := howManyMoves(theBoard)
-	numberOfPeices := howManyPeices(theBoard, theBoard.whoseTurn())
+	// numberOfMoves := howManyMoves(theBoard)
+	// numberOfPeices := howManyPeices(theBoard, theBoard.whoseTurn())
 
-	for {
-		outcome := determineOutcome(numberOfMoves, numberOfPeices)
-		log.Printf("yeilds result: %v\n", outcome)
-		moveId := rand.Intn(45)
-		theMove := theMoveList[moveId]
-		err := theBoard.checkMove(theMove[0], theMove[1])
-		if err == nil {
-			return theMove
+	nextStates := getNextStates(theBoard)
+
+	// fmt.Printf("show me what you look like:\n %v\n", nextStates)
+
+	var (
+		bestMove  []int
+		bestScore = float64(50)
+	)
+	for i := 0; i < len(nextStates); i++ {
+		if nextStates[i] != nil {
+			newMoves := howManyMoves(nextStates[i])
+			numPeices := howManyPeices(nextStates[i], theBoard.whoseTurn())
+			outcome := determineOutcome(newMoves, numPeices)
+			log.Printf("yeilds result: %v vs current best: %v\n", outcome, bestScore)
+			if outcome < bestScore {
+				bestScore = outcome
+				bestMove = theMoveList[i]
+			}
+
 		}
 	}
+
+	return bestMove
 
 }
 
