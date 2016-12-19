@@ -4,6 +4,7 @@ import (
 	"bufio"
 	_ "bytes"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -15,61 +16,30 @@ var (
 )
 
 func main() {
+	var numPlayers int
+	flag.IntVar(&numPlayers, "players", 0, "This is how many players you want to play the game")
+	flag.Parse()
+
 	getMoves()
 
-	theBoard := newBoard(nil)
+	if numPlayers == 0 {
 
-	for {
-		move := findNextMove(theBoard)
-		if theBoard.turn == true {
-			promptForMove(theBoard)
-		} else {
-			theBoard.makeMove(move[0], move[1])
-			checkForWin(theBoard)
+		playBots()
+	} else if numPlayers == 1 {
+		theBoard := newBoard(nil)
+		for {
+
+			if theBoard.turn == true {
+				promptForMove(theBoard)
+			} else {
+				move := findNextMove(theBoard)
+				theBoard.makeMove(move[0], move[1])
+				checkForWin(theBoard)
+			}
 		}
+	} else {
+		playGame()
 	}
-
-	// oponents next moves based on mine
-	// newNextState := make([][]*board, len(nextStates))
-	// for i := 0; i < len(nextStates); i++ {
-	// 	startState := nextStates[i]
-	// 	if startState != nil {
-	// 		newNextState[i] = getNextStates(startState)
-	// 	}
-	// }
-	// fmt.Printf("lets see theseNext moves:\n %v\n", newNextState)
-
-	// defer func() {
-	// 	err := recover()
-	// 	if err != nil {
-	// 		fmt.Printf("wtf happened:\n%v", err)
-	// 	}
-	// }()
-
-	// my next moves based on my oponenets nexted moves based on mine
-	// anotherNextState := make([][][]*board, len(newNextState))
-	// for i := 0; i < len(newNextState); i++ {
-	// 	fmt.Printf("how could this be out of bounds?!: %v\n", i)
-	// 	someNextStates := newNextState[i]
-	// 	if someNextStates != nil {
-	// 		anotherNextState[i] = make([][]*board, len(newNextState[i]))
-	// 		for j := 0; j < len(someNextStates); j++ {
-	// 			someBoard := someNextStates[j]
-	// 			if someBoard != nil {
-	// 				anotherNextState[i][j] = getNextStates(someBoard)
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// fmt.Printf("finally a few moves down:\n%v\n", anotherNextState)
-
-	possibleMoves := howManyMoves(theBoard)
-	fmt.Printf("how many moves can I make?: %v\n", possibleMoves)
-
-	// getMoves()
-
-	// playGame()
 
 }
 
@@ -184,6 +154,15 @@ func getMoves() [][]int {
 	return result
 }
 
+func playBots() {
+	theBoard := newBoard(nil)
+
+	for {
+		move := findNextMove(theBoard)
+		theBoard.makeMove(move[0], move[1])
+		checkForWin(theBoard)
+	}
+}
 func playGame() {
 
 	theBoard := newBoard(nil)
