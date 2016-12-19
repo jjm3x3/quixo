@@ -13,17 +13,18 @@ import (
 
 var (
 	theMoveList [][]int
+	showBoard   bool
 )
 
 func main() {
 	var numPlayers int
 	flag.IntVar(&numPlayers, "players", 0, "This is how many players you want to play the game")
+	flag.BoolVar(&showBoard, "show", false, "Toggles wheather the board is printed each time")
 	flag.Parse()
 
 	getMoves()
 
 	if numPlayers == 0 {
-
 		playBots()
 	} else if numPlayers == 1 {
 		theBoard := newBoard(nil)
@@ -211,6 +212,8 @@ func checkForWin(board *board) {
 		board.printBoard()
 		os.Exit(0)
 	}
-	board.printBoard()
+	if showBoard {
+		board.printBoard()
+	}
 
 }
