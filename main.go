@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 var (
@@ -158,9 +159,22 @@ func getMoves() [][]int {
 func playBots() {
 	theBoard := newBoard(nil)
 
+	now := time.Now()
+	timeString := now.Format(time.RFC3339)
+	timeString = timeString[:len(timeString)-6]
+	log.Printf("what time is it: %v", timeString)
+
+	file, err := os.Create("./games/game" + timeString + ".moves")
+	if err != nil {
+		panic(fmt.Sprintf("how can I track my reslts with: %v\n", err))
+	}
+	defer file.Close()
+
 	for {
 		move := findNextMove(theBoard)
 		theBoard.makeMove(move[0], move[1])
+		file.WriteString(strconv.Itoa(move[0]) + "," + strconv.Itoa(move[1]) + "\n")
+
 		checkForWin(theBoard)
 	}
 }
