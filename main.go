@@ -7,9 +7,15 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"time"
+)
+
+const (
+	BASIC_AI       = 1
+	NEURAL_NETWORK = 2
 )
 
 var (
@@ -34,7 +40,7 @@ func main() {
 			if theBoard.turn == true {
 				promptForMove(theBoard)
 			} else {
-				move := findNextMove(theBoard)
+				move := findNextMove(theBoard, BASIC_AI)
 				theBoard.makeMove(move[0], move[1])
 				checkForWin(theBoard)
 			}
@@ -45,8 +51,43 @@ func main() {
 
 }
 
-func findNextMove(theBoard *board) []int {
+func findNextMove(theBoard *board, aiKind int) []int {
 
+	if aiKind == NEURAL_NETWORK {
+		return neuralNetwork(theBoard)
+	} else {
+		return basicAI(theBoard)
+	}
+
+}
+
+func neuralNetwork(theBoard *board) []int {
+	numberOfMoves := howManyMoves(theBoard)
+	numberOfPeices := howManyPeices(theBoard, theBoard.whoseTurn())
+
+	for {
+		moveId := determineOutcome(numberOfMoves, numberOfPeices)
+		theMove := theMoveList[moveId]
+		err := theBoard.checkMove(theMove[0], theMove[1])
+		if err == nil {
+			return theMove
+		}
+	}
+
+}
+
+func determineOutcome(x, y int) int {
+	now := time.Now()
+	rand.Seed(int64(now.Nanosecond()))
+	return rand.Intn(45)
+
+	// if x*w1+y*w2 > t {
+	// 	return 1
+	// }
+
+}
+
+func basicAI(theBoard *board) []int {
 	nextStates := getNextStates(theBoard)
 
 	// fmt.Printf("show me what you look like:\n %v\n", nextStates)
@@ -177,11 +218,13 @@ func playBots() {
 	defer file2.Close()
 
 	for {
-		move := findNextMove(theBoard)
-		theBoard.makeMove(move[0], move[1])
 		if theBoard.turn {
+			move := findNextMove(theBoard, NEURAL_NETWORK)
+			theBoard.makeMove(move[0], move[1])
 			file1.WriteString(strconv.Itoa(move[0]) + "," + strconv.Itoa(move[1]) + "\n")
 		} else {
+			move := findNextMove(theBoard, BASIC_AI)
+			theBoard.makeMove(move[0], move[1])
 			file2.WriteString(strconv.Itoa(move[0]) + "," + strconv.Itoa(move[1]) + "\n")
 		}
 
