@@ -66,7 +66,9 @@ func neuralNetwork(theBoard *board) []int {
 	numberOfPeices := howManyPeices(theBoard, theBoard.whoseTurn())
 
 	for {
-		moveId := determineOutcome(numberOfMoves, numberOfPeices)
+		outcome := determineOutcome(numberOfMoves, numberOfPeices)
+		log.Printf("yeilds result: %v\n", outcome)
+		moveId := rand.Intn(45)
 		theMove := theMoveList[moveId]
 		err := theBoard.checkMove(theMove[0], theMove[1])
 		if err == nil {
@@ -76,14 +78,31 @@ func neuralNetwork(theBoard *board) []int {
 
 }
 
-func determineOutcome(x, y int) int {
+type neuron struct {
+	w1,
+	w2 float64
+}
+
+func (n *neuron) compute(x, y float64) float64 {
+	return float64(x)*n.w1 + float64(y)*n.w2
+}
+
+func determineOutcome(x, y int) float64 {
+	log.Printf("%v , %v\n", x, y)
 	now := time.Now()
 	rand.Seed(int64(now.Nanosecond()))
-	return rand.Intn(45)
+	// w1 := rand.Intn(45)
+	// w2 := rand.Intn(45)
 
-	// if x*w1+y*w2 > t {
-	// 	return 1
-	// }
+	// return x*w1 + y*w2
+
+	fx := float64(x)
+	fy := float64(y)
+	firstN := &neuron{0.5, 0.5}
+	firstN1 := &neuron{0.1, 0.2}
+	finalN := &neuron{0.7, 0.36}
+
+	return finalN.compute(firstN.compute(fx, fy), firstN1.compute(fx, fy))
 
 }
 
