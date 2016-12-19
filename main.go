@@ -162,18 +162,28 @@ func playBots() {
 	now := time.Now()
 	timeString := now.Format(time.RFC3339)
 	timeString = timeString[:len(timeString)-6]
-	log.Printf("what time is it: %v", timeString)
+	// log.Printf("what time is it: %v", timeString)
 
-	file, err := os.Create("./games/game" + timeString + ".moves")
+	file1, err := os.Create("./games/player1game" + timeString + ".moves")
 	if err != nil {
 		panic(fmt.Sprintf("how can I track my reslts with: %v\n", err))
 	}
-	defer file.Close()
+	defer file1.Close()
+
+	file2, err := os.Create("./games/player2game" + timeString + ".moves")
+	if err != nil {
+		panic(fmt.Sprintf("how can I track my reslts with: %v\n", err))
+	}
+	defer file2.Close()
 
 	for {
 		move := findNextMove(theBoard)
 		theBoard.makeMove(move[0], move[1])
-		file.WriteString(strconv.Itoa(move[0]) + "," + strconv.Itoa(move[1]) + "\n")
+		if theBoard.turn {
+			file1.WriteString(strconv.Itoa(move[0]) + "," + strconv.Itoa(move[1]) + "\n")
+		} else {
+			file2.WriteString(strconv.Itoa(move[0]) + "," + strconv.Itoa(move[1]) + "\n")
+		}
 
 		checkForWin(theBoard)
 	}
