@@ -55,6 +55,10 @@ func (n *neuron) compute(x, y float64) float64 {
 	return float64(x)*n.w1 + float64(y)*n.w2
 }
 
+func newNeuron(w1, w2) *neuron {
+	return &neuron{w1, w2}
+}
+
 func determineOutcome(x, y int) float64 {
 	log.Printf("%v , %v\n", x, y)
 	now := time.Now()
@@ -66,9 +70,9 @@ func determineOutcome(x, y int) float64 {
 
 	fx := float64(x)
 	fy := float64(y)
-	firstN := &neuron{0.5, 0.5}
-	firstN1 := &neuron{0.1, 0.2}
-	finalN := &neuron{0.7, 0.36}
+	firstN := newNeuron(0.5, 0.5)
+	firstN1 := newNeuron(0.1, 0.2)
+	finalN := newNeuron(0.7, 0.36)
 
 	return finalN.compute(firstN.compute(fx, fy), firstN1.compute(fx, fy))
 
